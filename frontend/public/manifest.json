@@ -1,0 +1,8 @@
+{
+    "short_name": "Online Chess",
+    "name": "The alternative for Chess.com",
+    "start_url": ".",
+    "display": "standalone",
+    "theme_color": "#000000",
+    "background_color": "#ffffff"
+  }
