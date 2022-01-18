@@ -4,7 +4,8 @@ import io from "https://cdn.socket.io/4.3.2/socket.io.esm.min.js"
 const FLASK_ENDPOINT = "http://localhost:5000"
 let socket = io.connect(FLASK_ENDPOINT)
 
-function App() {
+
+function Chess(){
   //States    
   const [chatLogs, setChatLogs] = useState (["Welcome to Player 1 and 2 to Chess"]);
   const [message, setMessage] = useState("");
@@ -29,7 +30,7 @@ function App() {
   //When Send button is clicked
   function onSendClick(){
     //Send the message to the Flask Socket Server 
-    if(message != ""){
+    if(message !== ""){
       socket.emit("message", message);
       // console.log(message);
       setMessage("");
@@ -42,7 +43,7 @@ function App() {
     <div className="App">
       {
         //Display chat logs
-        chatLogs.length > 0 && chatLogs.map((index, msg) => { 
+        chatLogs.length > 0 && chatLogs.map((msg, index) => { 
           return(
             <div className="chat-message" key={index}>
               <p>{msg}</p>
@@ -52,7 +53,7 @@ function App() {
     <input value={message} name="message" onChange={e => {changeTextBox(e)}}/>
     <button onClick={onSendClick}>Send Message</button>
     </div>
-  );
+  );    
+ 
 }
-
-export default App;
+export default Chess;
