@@ -1,6 +1,6 @@
 import React from "react"
-import Chess from "./components/Chess/Chess"
-import Home from "./components/Home/Home"
+import Chess from "./pages/Chess/Chess"
+import Home from "./pages/Home/Home"
 import Nav from "./components/Nav/Nav"
 import { BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
 
