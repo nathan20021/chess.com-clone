@@ -31,6 +31,7 @@ function Chess(){
         //Send the message to the Flask Socket Server 
         if(message !== ""){
           socket.emit("message", message);
+          socket.emit("chess-move", {from: "e2", to : "e4"});
           // console.log(message);
           setMessage("");
         } else{
