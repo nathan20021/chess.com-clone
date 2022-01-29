@@ -1,12 +1,12 @@
 import {useState, useEffect} from "react"
-import io from "socket.io-client"
+import chessGame from "../components/chessGame"
 
+import io from "socket.io-client"
 const FLASK_ENDPOINT = "http://localhost:5000"
 let socket = io.connect(FLASK_ENDPOINT)
 
-
 function Chess(){
-
+  
     const [chatLogs, setChatLogs] = useState (["Welcome to Player 1 and 2 to Chess"]);
     const [message, setMessage] = useState("");
 
@@ -51,6 +51,7 @@ function Chess(){
             }
             <input value={message} name="message" onChange={e => {changeTextBox(e)}}/>
             <button onClick={onSendClick}>Send Message</button>
+            <chessGame />
         </div>
     )
 }

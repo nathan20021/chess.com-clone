@@ -10,10 +10,9 @@ socketio = SocketIO(app, cors_allowed_origins='*')
 #Set-up logging to ERROR only
 import logging
 log = logging.getLogger('werkzeug')
-log.setLevel(logging.ERROR)
+log.setLevel(logging.INFO)
 
 #Change on deployment
-app.debug = True
 app.host = 'localhost'
 
 #Socket listening to messages
@@ -39,7 +38,7 @@ def favicon():
 @app.route('/')
 @app.route('/home')
 def home():
-    return None    
+    return "<div> Hello </div>"    
 
 if __name__ == "__main__":
-    socketio.run(app)
+    socketio.run(app, debug=True, port=5000)
