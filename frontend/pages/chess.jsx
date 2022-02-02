@@ -32,7 +32,6 @@ function Chess(){
         if(message !== ""){
           socket.emit("message", message);
           socket.emit("chess-move", {from: "e2", to : "e4"});
-          // console.log(message);
           setMessage("");
         } else{
           console.log("Bro Message can't be empty!!")

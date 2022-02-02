@@ -1,7 +1,12 @@
 import { useState } from "react";
 import * as ChessJS from "chess.js";
+import dynamic from 'next/dynamic';
 
- function ChessBoard(){
+const Chessboard = dynamic(() => import('chessboardjsx'), {
+  ssr: false  // <- this do the magic ;)
+});
+
+ function ChessBoard(props){
     //Chess board is 8x8
     
     const Chess = typeof ChessJS === "function" ? ChessJS : ChessJS.Chess;
@@ -12,11 +17,13 @@ import * as ChessJS from "chess.js";
     console.log(chess.ascii());
     console.log(chess.board());
 
-    return(
-        <div>
-            <h1>Chess Board</h1>
-        </div>
-    )
+    if (window === undefined) { 
+        return null; 
+    }else {
+        return (
+            <Chessboard position={props.position} /> 
+        )
+    }
 }
 
 export default ChessBoard;
