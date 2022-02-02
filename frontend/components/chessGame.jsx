@@ -2,15 +2,14 @@ import Chessboard from "./ChessBoard"
 
 
 
-function chessGame(){
+function ChessGame(){
 
     return(
         <div>
-            <Chessboard position="start"/>
-            <h1>Hello</h1>
+            <Chessboard/>
         </div>
     )
 
 }
 
-export default chessGame;
+export default ChessGame;

@@ -1,5 +1,5 @@
 import {useState, useEffect} from "react"
-import chessGame from "../components/chessGame"
+import ChessGame from "../components/ChessGame"
 
 import io from "socket.io-client"
 const FLASK_ENDPOINT = "http://localhost:5000"
@@ -50,7 +50,6 @@ function Chess(){
             }
             <input value={message} name="message" onChange={e => {changeTextBox(e)}}/>
             <button onClick={onSendClick}>Send Message</button>
-            <chessGame />
         </div>
     )
 }
