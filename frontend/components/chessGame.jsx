@@ -1,7 +1,5 @@
 import Chessboard from "./ChessBoard"
 
-
-
 function ChessGame(){
 
     return(

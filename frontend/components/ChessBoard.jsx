@@ -3,7 +3,7 @@ import * as ChessJS from "chess.js";
 import dynamic from 'next/dynamic';
 
 const Chessboard = dynamic(() => import('chessboardjsx'), {
-  ssr: false  // <- this do the magic ;)
+  ssr: false
 });
 
 const Chess = typeof ChessJS === "function" ? ChessJS : ChessJS.Chess;
@@ -27,28 +27,13 @@ function ChessBoard(){
         })
         if(move !== null){
             setFen(game.fen());
-            game.load(fen);
-            setHistory(game.history({ verbose: true }));
+            setHistory(game.history());
         }
     }
 
     function onSquareClick(square){
         console.log("onSquareClick: " + square);
         console.log(fen);
-        // let move = game.move({
-        //     from: currentPieceSquare,
-        //     to: square,
-        //     promotion: "q" // always promote to a queen for example simplicity
-        // });
-        
-        // setCurrentPieceSquare(square);
-        // // illegal move
-        // if (move === null) return;
-        // setFen(game.fen()),
-        // setHistory(game.history({ verbose: true })),
-        // setCurrentPieceSquare("")
-
-
     };
 
     function mouseOverSquare(square){
@@ -58,12 +43,19 @@ function ChessBoard(){
     return (
         <div>
             <Chessboard
-                onDrop={onDrop} 
+                onDrop={onDrop}
                 onSquareClick={onSquareClick}
                 position={fen}
                 mouseOverSquare={mouseOverSquare}
-             /> 
-             <p>{fen}</p>
+             />
+             <p>
+                {history.forEach(
+                item=>{
+                    return(
+                        <p>{item}</p>
+                    )}
+                )}
+             </p>
         </div>
     )
 }
