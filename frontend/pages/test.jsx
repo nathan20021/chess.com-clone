@@ -1,13 +1,10 @@
-import ChessGame from "../components/ChessGame"
-
-
 function test(){
 
 
     return(
         <div>
             <h1>
-                <ChessGame />
+                test
             </h1>
         </div>
     )

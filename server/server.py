@@ -15,18 +15,35 @@ log.setLevel(logging.ERROR)
 #Change on deployment
 app.host = 'localhost'
 app.debug = True;
-
+USERS={}
 #------------------------- socket ----------------------------------------
 @socketio.on('connect')
 def connect(auth):
-    print("-------------------------------------------------------------")
-    print(f"User Connected with ID: {request.sid}")
-    print("-------------------------------------------------------------")
+    pass
+    # print("----------------------- | Connected | -----------------------------")
+    # print(f"User Connected with ID: {request.sid}")
+    # print("-------------------------------------------------------------")
+
+@socketio.on('connect-to-game')
+def connect_to_game(payload):
+    print(f"{payload}")
+
+@socketio.on("create-user")
+def onCreateUser(payload):
+    USERS[payload['username']] = {
+        "status" : "pending",
+        "sid"    : request.sid,
+        "with"   : "None",
+        "side"   : payload['side']
+    }
+    print(f"{USERS}")
 
 
 @socketio.on('disconnect')
 def disconnect():
-    print('Client disconnected')
+    print("########################| Disconnected | ########################")
+    print(f"User disconnected with ID: {request.sid}")
+    print("##################################################################")
 
 @socketio.on('message')
 def handleMessage(msg):
@@ -36,7 +53,7 @@ def handleMessage(msg):
 
 @socketio.on("chess-move")
 def handleChessMove(chessMoveData):
-    print(f"Chess Move: {chessMoveData}")
+    print(f"{request.sid} Move: {chessMoveData}")
     return None
 
 #------------------------- app routing ------------------------------------
