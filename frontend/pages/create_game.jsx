@@ -1,7 +1,11 @@
-import {useState} from "react"
+import {useState, useEffect} from "react"
+import Link from 'next/link'
+
 import io from "socket.io-client"
 const FLASK_ENDPOINT = "http://localhost:5000"
 let socket = io.connect(FLASK_ENDPOINT)
+
+
 
 function createGame(){
     const [username, setUsername] = useState("");
@@ -9,8 +13,10 @@ function createGame(){
     const [side, setSide] = useState("white")
 
     function connectToGame(){
-        console.log("lmaoo");
-        return "lol"
+        socket.emit("connect-to-game", {
+            username: username,
+            friendUsername: friendUsername
+        });
     }
 
     function createGame(){
@@ -48,7 +54,10 @@ function createGame(){
             </label>
             <br />
             <br />
-            <button onClick={createGame} > Create A Game </button>
+            <Link href="/chess">
+                <button onClick={createGame} > Create A Game </button>
+            </Link>
+
             <br />
             <br />
             <br />
@@ -62,10 +71,9 @@ function createGame(){
                 placeholder="Corn Soup"
                 onChange={e => {setFriendUsername(e.target.value)}}
             />
-            <button onClick={()=>{
-                socket.emit("connect-to-game", {client: username, friend: friendUsername});
-
-            }} > Join Game </button>
+            <Link href="/chess">
+                <button onClick={connectToGame} > Join Game </button>
+            </Link>
 
 
         </div>

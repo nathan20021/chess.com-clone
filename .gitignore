@@ -1,4 +1,6 @@
 /frontend/online-chess/node_modules
 
 /server/env
+/server/.env
+
 __pycache__

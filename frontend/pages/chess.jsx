@@ -21,6 +21,11 @@ function Chess(){
   const [currentSquare, setCurrentSquare] = useState("");
   const [currentPieceSquare, setCurrentPieceSquare] = useState("");
   
+  //-------------- Initial Talk to Server ----------------------------
+  useEffect(()=>{
+    
+  }, [])
+
   //----------- Chat States ----------------------------------
     const [chatLogs, setChatLogs] = useState (["Welcome to Player 1 and 2 to Chess"]);
     const [message, setMessage] = useState("");
