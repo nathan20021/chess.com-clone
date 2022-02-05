@@ -1,9 +1,9 @@
 import {useState, useEffect} from "react"
+import configData from "../config.json"
 import Link from 'next/link'
 
 import io from "socket.io-client"
-const FLASK_ENDPOINT = "http://localhost:5000"
-let socket = io.connect(FLASK_ENDPOINT)
+let socket = io.connect(configData.SOCKET_URL)
 
 
 
@@ -12,13 +12,18 @@ function createGame(){
     const [friendUsername, setFriendUsername] = useState("");
     const [side, setSide] = useState("white")
 
+    useEffect(()=>{
+        console.log(session);
+    }, [])
+
     function connectToGame(){
+
         socket.emit("connect-to-game", {
             username: username,
             friendUsername: friendUsername
         });
-    }
 
+    }
     function createGame(){
         socket.emit("create-user", {username: username, side: side});
 

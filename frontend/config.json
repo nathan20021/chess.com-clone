@@ -1,0 +1,8 @@
+{
+    "SERVER_URL": "https://example.com/api/",
+    "SOCKET_URL": "http://localhost:5000",
+    "THEME_COLORS": {
+      "PRIMARY": "#007bff",
+      "SECONDARY": "#fc3"
+    }
+  }

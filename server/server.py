@@ -63,7 +63,6 @@ def onCreateUser(payload):
     }
     session['username']= payload['username']
 
-
 @socketio.on('disconnect')
 def disconnect():
     # print("########################| Disconnected | ########################")
@@ -80,8 +79,8 @@ def handleMessage(msg):
 
 @socketio.on("chess-move")
 def handleChessMove(chessMoveData):
+    emit("update-chess-move", chessMoveData, broadcast=True)
     print(f"{request.sid} Move: {chessMoveData}")
-    return None
 
 #------------------------- app routing ------------------------------------
 @app.route('/favicon.ico')

@@ -1,10 +1,10 @@
 import {useState, useEffect} from "react"
 import * as ChessJS from "chess.js";
 import dynamic from 'next/dynamic';
+import configData from "../config.json"
 
 import io from "socket.io-client"
-const FLASK_ENDPOINT = "http://localhost:5000"
-let socket = io.connect(FLASK_ENDPOINT)
+let socket = io.connect(configData.SOCKET_URL)
 
 const Chessboard = dynamic(() => import('chessboardjsx'), {
   ssr: false
@@ -30,17 +30,33 @@ function Chess(){
     const [chatLogs, setChatLogs] = useState (["Welcome to Player 1 and 2 to Chess"]);
     const [message, setMessage] = useState("");
 
-
     function getMessages(){
         socket.on("message", msg => {
           setChatLogs([...chatLogs, msg]);
         })
       }
-    
+
+    function socketInitializer(){
+      socket.on("message", msg => {
+        setChatLogs([...chatLogs, msg]);
+      })
+
+      socket.on("update-chess-move", chessData =>{
+        console.log(chessData.from);
+        let move = game.move({
+          from : chessData.from,
+          to: chessData.to,
+          promotion: "q"
+        })
+        if(move !== null){
+          setFen(game.fen());
+          setHistory(game.history());
+        }
+      })
+    }
       useEffect(() => {
-        getMessages();
-        console.log(chatLogs);
-      }, [chatLogs.length]);
+        socketInitializer();
+      }, [socket]);
     
       // UI Logic
       function changeTextBox(e){
