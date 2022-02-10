@@ -40,9 +40,11 @@ function ChessGame(){
         setGameState(response)
       }
     }
+    fetchUserData();
+  }, [])
 
-    socket.open();
-      
+  useEffect(() =>{
+   
     socket.on("connect-user", connectRequest=>{
       console.log("------------------------ connectRequest -----------------------");
       console.log(connectRequest);
@@ -61,14 +63,20 @@ function ChessGame(){
         setFen(game.fen());
         setHistory(game.history());
       }
-    })
-    fetchUserData();
+    }) 
+  }, [socket, game])
 
+  useEffect(()=>{
+    socket.open();
+    
+    socket.on("message", msg=>{
+      setChatLogs([...chatLogs, msg]);
+    })  
 
-    return( ()=>{
-      socket.close();
-    })
-  }, [])
+    // return( ()=>{
+    //   socket.close();
+    // })
+  }, [socket,chatLogs.length])
     
   // UI Logic
   function changeTextBox(e){

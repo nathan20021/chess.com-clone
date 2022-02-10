@@ -17,7 +17,8 @@ function createGame(){
     }, [])
 
     function connectToGame(){
-        // socket.emit('join', {room:friendUsername})
+        socket.emit('join', {username: username,room:friendUsername})
+
         socket.emit("connect-to-game", {
             username: username,
             friendUsername: friendUsername
@@ -25,7 +26,7 @@ function createGame(){
 
     }
     function createGame(){
-        // socket.emit("join", {room : "host"})
+        socket.emit("join", {username: username, room : "host"})
         socket.emit("create-user", {username: username, side: side});
 
     }
