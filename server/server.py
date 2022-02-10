@@ -1,13 +1,14 @@
 from flask import Flask, redirect, url_for, request, session
 from flask_session import Session
-from flask_socketio import SocketIO, send, emit, join_room, leave_room
+from flask_socketio import SocketIO, send, emit, join_room, rooms
 from config import ApplicationConfig
-
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 app.config.from_object(ApplicationConfig)
 
-socketio = SocketIO(app, cors_allowed_origins='*')
+socketio = SocketIO(app, cors_allowed_origins='*', async_mode="eventlet")
 server_session = Session(app)
 
 #Set-up logging to ERROR only
@@ -26,6 +27,13 @@ def connect(auth):
     # print("----------------------- | Connected | -----------------------------")
     # print(f"User Connected with ID: {request.sid}")
     # print("-------------------------------------------------------------")
+@socketio.on('join')
+def on_join(data):
+    if data['room']!="host":
+        join_room(USERS[data['room']]['sid'])
+    else:
+        join_room(session.sid)
+
 
 @socketio.on('connect-to-game')
 def connect_to_game(payload):
@@ -38,6 +46,7 @@ def connect_to_game(payload):
 
         # Create the player object
         USERS[userName] = {
+            "host"   : USERS[roomHost]['sid'],
             "status" : "in-game",
             "sid"    : request.sid,
             "with"   : roomHost,
@@ -47,6 +56,19 @@ def connect_to_game(payload):
             USERS[userName]["side"] = "white"
         else:
             USERS[userName]["side"] = "black"
+
+        # Sending data to the host 
+        to_send = {
+            "host"    : USERS[roomHost]['sid'],
+            "status"  : "in-game",
+            "sid"     : USERS[roomHost]["sid"],
+            "with"    : userName,
+            "withSid" : request.sid,
+            "side"    : USERS[roomHost]["side"]
+        }
+        print(f"{to_send}")
+        # , room= to_send['host']
+        emit("connect-user", to_send)
         return True
     except:
         return False
@@ -55,19 +77,17 @@ def connect_to_game(payload):
 @socketio.on("create-user")
 def onCreateUser(payload):
     USERS[payload['username']] = {
+        "host"    : request.sid,
         "status" : "pending",
         "sid"    : request.sid,
         "with"   : "None",
         "withSid": "None",
         "side"   : payload['side']
     }
-    session['username']= payload['username']
+    # session['username']= payload['username']
 
 @socketio.on('disconnect')
 def disconnect():
-    # print("########################| Disconnected | ########################")
-    # print(f"User disconnected with ID: {request.sid}")
-    # print("##################################################################")
     pass
 
 
@@ -79,8 +99,10 @@ def handleMessage(msg):
 
 @socketio.on("chess-move")
 def handleChessMove(chessMoveData):
-    emit("update-chess-move", chessMoveData, broadcast=True)
-    print(f"{request.sid} Move: {chessMoveData}")
+    # room=USERS[chessMoveData['username']]['withSid']
+    print(f"{request.sid} is Sending data via room: {chessMoveData['host']}")
+    #, room=chessMoveData['host']
+    emit("update-chess-move", chessMoveData['move'])
 
 #------------------------- app routing ------------------------------------
 @app.route('/favicon.ico')
@@ -94,9 +116,17 @@ def favicon():
 def home():
     return "<div> Hello </div>"
 
-@app.route('/user', methods=['GET'])
-def get_user():
-    return USERS
+@app.route('/api/user/<username>', methods=['GET'])
+def get_user(username):
+    return USERS[username], 200
+
+@app.route('/api/users', methods=['GET'])
+def get_users():
+    return USERS, 200
+
+@app.route('/api/users/clear', methods=['DELETE'])
+def delete_users():
+    return "Deleted", 200
 
 if __name__ == "__main__":
     socketio.run(app, port=5000)

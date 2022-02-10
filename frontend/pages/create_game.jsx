@@ -13,11 +13,11 @@ function createGame(){
     const [side, setSide] = useState("white")
 
     useEffect(()=>{
-        console.log(session);
+        // console.log(session);
     }, [])
 
     function connectToGame(){
-
+        // socket.emit('join', {room:friendUsername})
         socket.emit("connect-to-game", {
             username: username,
             friendUsername: friendUsername
@@ -25,6 +25,7 @@ function createGame(){
 
     }
     function createGame(){
+        // socket.emit("join", {room : "host"})
         socket.emit("create-user", {username: username, side: side});
 
     }
@@ -59,7 +60,7 @@ function createGame(){
             </label>
             <br />
             <br />
-            <Link href="/chess">
+            <Link href={`/chess/${username}`}>
                 <button onClick={createGame} > Create A Game </button>
             </Link>
 
@@ -76,7 +77,7 @@ function createGame(){
                 placeholder="Corn Soup"
                 onChange={e => {setFriendUsername(e.target.value)}}
             />
-            <Link href="/chess">
+            <Link href={`/chess/${username}`}>
                 <button onClick={connectToGame} > Join Game </button>
             </Link>
 
