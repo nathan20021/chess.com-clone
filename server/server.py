@@ -31,9 +31,12 @@ def connect(auth):
 def on_join(data):
     if data['room']!="host":
         join_room(USERS[data['room']]['sid'])
+        print(f"{request.sid} has joined room {USERS[data['room']]['sid']}")
+        send(f"Welcome to {request.sid}, {data['username']}", to=USERS[data['room']]['sid'])
     else:
-        join_room(session.sid)
-
+        join_room(request.sid)
+        print(f"{request.sid} has joined room {request.sid}")
+        send( f"Welcome to {request.sid}, {data['username']}")
 
 @socketio.on('connect-to-game')
 def connect_to_game(payload):
@@ -66,9 +69,11 @@ def connect_to_game(payload):
             "withSid" : request.sid,
             "side"    : USERS[roomHost]["side"]
         }
+        # join_room(roomHost)
+        # print(f"{userName} has join room: {USERS[roomHost]['sid']}")
         print(f"{to_send}")
         # , room= to_send['host']
-        emit("connect-user", to_send)
+        emit("connect-user", to_send, to=USERS[roomHost]['sid'])
         return True
     except:
         return False
@@ -84,6 +89,9 @@ def onCreateUser(payload):
         "withSid": "None",
         "side"   : payload['side']
     }
+    # join_room(request.sid)
+    # print(f"{payload['username']} has join room: {request.sid}")
+
     # session['username']= payload['username']
 
 @socketio.on('disconnect')
@@ -102,19 +110,13 @@ def handleChessMove(chessMoveData):
     # room=USERS[chessMoveData['username']]['withSid']
     print(f"{request.sid} is Sending data via room: {chessMoveData['host']}")
     #, room=chessMoveData['host']
-    emit("update-chess-move", chessMoveData['move'])
+    emit("update-chess-move", chessMoveData['move'], to=chessMoveData['host'])
 
 #------------------------- app routing ------------------------------------
 @app.route('/favicon.ico')
 def favicon():
     return redirect(url_for('static', filename='favicon.ico'))
 
-
-
-@app.route('/')
-@app.route('/home')
-def home():
-    return "<div> Hello </div>"
 
 @app.route('/api/user/<username>', methods=['GET'])
 def get_user(username):
@@ -123,10 +125,6 @@ def get_user(username):
 @app.route('/api/users', methods=['GET'])
 def get_users():
     return USERS, 200
-
-@app.route('/api/users/clear', methods=['DELETE'])
-def delete_users():
-    return "Deleted", 200
 
 if __name__ == "__main__":
     socketio.run(app, port=5000)
