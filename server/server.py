@@ -1,6 +1,6 @@
 from flask import Flask, redirect, url_for, request, session
 from flask_session import Session
-from flask_socketio import SocketIO, send, emit, join_room, rooms
+from flask_socketio import SocketIO, send, emit, join_room
 from config import ApplicationConfig
 from flask_cors import CORS
 
@@ -32,7 +32,8 @@ def on_join(data):
     if data['room']!="host":
         join_room(USERS[data['room']]['sid'])
         print(f"{request.sid} has joined room {USERS[data['room']]['sid']}")
-        send(f"Welcome to {request.sid}, {data['username']}", to=USERS[data['room']]['sid'])
+        # to=USERS[data['room']]['sid'],
+        send(f"Welcome to {request.sid}, {data['username']}", broadcast=True)
     else:
         join_room(request.sid)
         print(f"{request.sid} has joined room {request.sid}")
@@ -72,8 +73,8 @@ def connect_to_game(payload):
         # join_room(roomHost)
         # print(f"{userName} has join room: {USERS[roomHost]['sid']}")
         print(f"{to_send}")
-        # , room= to_send['host']
-        emit("connect-user", to_send, to=USERS[roomHost]['sid'])
+        #, to=USERS[roomHost]['sid']
+        emit("connect-user", to_send, broadcast=True)
         return True
     except:
         return False
@@ -110,7 +111,8 @@ def handleChessMove(chessMoveData):
     # room=USERS[chessMoveData['username']]['withSid']
     print(f"{request.sid} is Sending data via room: {chessMoveData['host']}")
     #, room=chessMoveData['host']
-    emit("update-chess-move", chessMoveData['move'], to=chessMoveData['host'])
+
+    emit("update-chess-move", chessMoveData['move'], broadcast=True)
 
 #------------------------- app routing ------------------------------------
 @app.route('/favicon.ico')
