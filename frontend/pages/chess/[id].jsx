@@ -145,14 +145,14 @@ function ChessGame(){
             <h1>{username} </h1>
           </div>
 
-          <div id="game-box">
+          <div id="game-box" className="bg-[#272727] h-1/2">
             <div id="history-box" className="h-1/2 overflow-y-auto overflow-x-hidden mt-5">
             {history.map( move => 
               <p key={move}>{move}</p>)
             }
             </div>
-          <div id="chat-box" className="h-1/2  overflow-y-auto overflow-x-hidden">
-
+          <div id="chat-box" className="h-1/2 overflow-y-auto overflow-x-hidden flex flex-col items-end justify-end">
+          <div id="chat-history" className="overflow-y-auto overflow-x-hidden h-9/10">
             {
               //Display chat logs
               chatLogs.length > 0 && chatLogs.map((msg, index) => { 
@@ -162,8 +162,11 @@ function ChessGame(){
                   </div>
               )})
             }
+
+
+          </div>
             <input
-              className="appearance-none rounded-md
+              className="appearance-none h-1/10
                 block w-full px-3 py-2 my-2
                 border border-gray-300 placeholder-gray-500 
                 text-gray-900  focus:outline-none 
@@ -173,6 +176,7 @@ function ChessGame(){
               name="message" 
               onChange={e => {changeTextBox(e)}}
               onKeyPress={onSendClick}
+              autoComplete="off"
               />
           </div>
           </div>
