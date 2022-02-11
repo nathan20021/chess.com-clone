@@ -84,14 +84,16 @@ function ChessGame(){
   }
 
   //When Send button is clicked
-  function onSendClick(){
+  function onSendClick(event){
     //Send the message to the Flask Socket Server 
-    if(message !== ""){
-      socket.emit("message", message);
-      setMessage("");
-    } else{
-      console.log("Bro Message can't be empty!!")
-      console.log(document.cookie);
+    if(event.key ==='Enter'){
+      if(message !== ""){
+        socket.emit("message", message);
+        setMessage("");
+      } else{
+        console.log("Bro Message can't be empty!!")
+        console.log(document.cookie);
+      }
     }
   }
       
@@ -124,35 +126,56 @@ function ChessGame(){
 
 
   return(
-      <div className="Chess">
-        <h1>Welcome: {username} </h1>
-        <h1>
+      <div id="Chess" className="flex flex-row bg-[#1F2937] gap-4
+                                  w-screen h-screen text-white                               
+                                  overflow-hidden                "
+      >
+        {/* <h1>
           {gameState.status}
-        </h1>
+        </h1> */}
         <div id="ChessBoard">
-          <Chessboard
-              onDrop={onDrop}
-              onSquareClick={onSquareClick}
-              position={fen}
-              mouseOverSquare={mouseOverSquare}
-              orientation={gameState.side}
-              />
-            {history.map( move => <p key={move}>{move}</p>)}
+          <h1>{gameState.with} </h1>
+            <Chessboard
+                onDrop={onDrop}
+                onSquareClick={onSquareClick}
+                position={fen}
+                mouseOverSquare={mouseOverSquare}
+                orientation={gameState.side}
+                />
+            <h1>{username} </h1>
           </div>
 
-          <div id="ChatBox">
-          {
-            //Display chat logs
-            chatLogs.length > 0 && chatLogs.map((msg, index) => { 
-              return(
-                <div className="chat-message" key={index}>
-                <p>{msg}</p>
-                </div>
-            )})
-          }
+          <div id="game-box">
+            <div id="history-box" className="h-1/2 overflow-y-auto overflow-x-hidden mt-5">
+            {history.map( move => 
+              <p key={move}>{move}</p>)
+            }
+            </div>
+          <div id="chat-box" className="h-1/2  overflow-y-auto overflow-x-hidden">
+
+            {
+              //Display chat logs
+              chatLogs.length > 0 && chatLogs.map((msg, index) => { 
+                return(
+                  <div className="chat-message" key={index}>
+                  <p>{msg}</p>
+                  </div>
+              )})
+            }
+            <input
+              className="appearance-none rounded-md
+                block w-full px-3 py-2 my-2
+                border border-gray-300 placeholder-gray-500 
+                text-gray-900  focus:outline-none 
+                focus:ring-indigo-500 focus:border-indigo-500 
+                focus:z-10 sm:text-sm" 
+              value={message} 
+              name="message" 
+              onChange={e => {changeTextBox(e)}}
+              onKeyPress={onSendClick}
+              />
           </div>
-          <input value={message} name="message" onChange={e => {changeTextBox(e)}}/>
-          <button onClick={onSendClick}>Send Message</button>
+          </div>
       </div>
   )
 }
